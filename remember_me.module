@@ -1,0 +1,59 @@
+<?php
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use \Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_alter().
+ */
+function remember_me_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Only make changes to these forms.
+  if (in_array($form_id, array('user_login', 'user_login_block', 'user_login_form'))) {
+    // Configuration for the remember me checkbox.
+    $cbox['remember_me'] = array(
+      '#title' => t('Remember me'),
+      '#type' => \Drupal::state()->get('remember_me_checkbox_visible', 1) ? 'checkbox' : 'hidden',
+      '#default_value' => \Drupal::state()->get('remember_me_checkbox', 1),
+      '#attributes' => array('tabindex' => 1),
+    );
+
+    // Add a custom submit handler to save the value in user account.
+    $form['#submit'][] = '_remember_me_user_login_form_submit';
+
+    $que = array();
+    // Now lets try and insert it right after the password field in the document
+    // and set the tabindex to 1 for each field so that we can jump in sequence.
+    while (list($key, $val) = each($form)) {
+      switch ($key) {
+        case 'name':
+        case 'pass' :
+          $val['#attributes']['tabindex'] = 1;
+          break;
+        case 'actions':
+          $form = $que + $cbox + $form;
+          $form[$key]['submit']['#attributes']['tabindex'] = 1;
+          return;
+      }
+      $que[$key] = $val;
+    }
+  }
+}
+
+/**
+ * Custom submit handler for login form.
+ */
+function _remember_me_user_login_form_submit($form, FormStateInterface $form_state) {
+  $account = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+  $remember_me = $form_state->getValues()['remember_me'];
+  \Drupal::service('user.data')->set('remember_me', $account->id(), 'remember_me_value', $remember_me);
+}
+
+/**
+ * Implements hook_help().
+ */
+function remember_me_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.remember_me':
+      return t('Allows users to have persistent sessions via a checkbox "Remember me" on the login form.');
+  }
+}

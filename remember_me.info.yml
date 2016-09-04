@@ -1,0 +1,8 @@
+name: Remember me
+type: module
+description: "Adds a ''Remember me'' checkbox to login forms."
+package: Custom
+version: '8.x-0.x-dev'
+core: '8.x'
+project: 'remember_me'
+datestamp: 1454074708

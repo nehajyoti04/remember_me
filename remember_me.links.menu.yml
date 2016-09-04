@@ -1,0 +1,5 @@
+remember_me.admin_config:
+  title: 'Remember me'
+  parent: system.admin_config_system
+  description: 'Allows users to have persistent sessions via a checkbox "Remember me" on the login form.'
+  route_name: remember_me.admin_config

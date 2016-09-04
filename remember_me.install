@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * Remember me install file.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function remember_me_uninstall() {
+  // Delete variables.
+  \Drupal::state()->delete('remember_me_managed');
+  \Drupal::state()->delete('remember_me_lifetime');
+  \Drupal::state()->delete('remember_me_lifetime');
+  \Drupal::state()->delete('remember_me_checkbox_visible');
+}

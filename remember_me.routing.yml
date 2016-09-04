@@ -1,0 +1,7 @@
+remember_me.admin_config:
+  path: '/admin/config/system/remember_me'
+  defaults:
+    _form: '\Drupal\remember_me\Form\Remember_meConfigForm'
+    _title: 'Remember me settings'
+  requirements:
+    _permission: 'Configure settings like session time out for remember_me module.'
